@@ -1,3 +1,11 @@
+/*
+ * Emily Blanford
+ * 2/24/2018
+ * Refactoring deliverable1 to declutter main
+ * Created method to perform task
+ * Added Validator class to get correct user input
+ */
+
 package preWork;
 
 import java.util.Scanner;
@@ -5,59 +13,32 @@ import java.util.Stack;
 
 public class Deliverable1 {
 	public static void main(String[] args) {
-		// Scanner
-		Scanner scnr = new Scanner(System.in);
-		// User Inputs
-		int userInt1 = 0;
-		int userInt2 = 0;
-		// Sum Holders
-		int sumFirst;
-		int sumSecond;
-		// Outcome
-		boolean outcome = true;
-		// Arrays to put each digit into, stack uses first in last out logic
-		Stack<Integer> stack1 = new Stack<>();
-		Stack<Integer> stack2 = new Stack<>();
+		// Scanner and two stacks
+		Scanner scan = new Scanner(System.in);
+		Stack<Integer> firstNum = new Stack<Integer>();
+		Stack<Integer> secondNum = new Stack<Integer>();
 
-		// Collects two integers from user, returns error if incorrect input
-		System.out.println("Enter an integer: ");
-		userInt1 = scnr.nextInt();
-		System.out.println("Enter another integer with the same amount of digits: ");
-		userInt2 = scnr.nextInt();
-		
-		// Separates each digit and stores in an array, MAKE METHOD??
-		while (userInt1 > 0) {
-		    stack1.push(userInt1 % 10);
-		    userInt1 = userInt1 / 10;
-		}
-		while (userInt2 > 0) {
-			stack2.push(userInt2 % 10);
-			userInt2 = userInt2 / 10;
-		}
+		// Collects user input, with validation and stores as stacks
+		firstNum = Validator.getStack(scan, "Please enter an integer greater than zero: ", 0);
+		secondNum = Validator.getStack(scan, "Please enter another integer of the same length: ", 0, firstNum);
 
-		// Checks that number of digits are the same & returns false if not
-		if (stack1.size() == stack2.size()) {
-			// Creates the first sum by removing from the front of the array
-			sumFirst = stack1.pop() + stack2.pop();
+		// Outputs true or false
+		System.out.println("\n" + digitsEqual(firstNum, secondNum));
 
-			// Loops through until stack size is empty or sums do not equal
-			while (stack1.size() != 0) {
-			sumSecond = stack1.pop() + stack2.pop();
-			if (sumFirst != sumSecond) {
-					outcome = false;
-					break;
-				}
-			sumFirst = sumSecond;
-			}
-
-		} else {
-			outcome = false;
-		}
-
-		// Prints outcome
-		System.out.println(outcome);
-
-		// Closes scanner to remove warning
-		scnr.close();
+		scan.close();
 	}
+
+	// Method to determine if the each digit sum equals the next
+	public static boolean digitsEqual(Stack<Integer> first, Stack<Integer> second) {
+		int sum = first.pop() + second.pop();
+		while (first.size() != 0) {
+			int nextSum = first.pop() + second.pop();
+			if (sum != nextSum)
+				return false;
+			sum = nextSum;
+		}
+
+		return true;
+	}
+
 }
